@@ -36,3 +36,7 @@ update_initramfs() {
         chroot /target mkinitfs $dir
     done
 }
+
+configure(){
+    : fixme
+}

@@ -41,3 +41,17 @@ update_initramfs() {
         chroot /target mkinitcpio -k $dir -g /boot/initramfs-$dir.img
     done
 }
+
+configure(){
+    case $1 in
+      xfce)
+        chroot /target systemctl enable lightdm
+        ;;
+      gnome)
+        chroot /target systemctl enable gdm
+        ;;
+      kde)
+        chroot /target systemctl enable sddm
+        ;;
+    esac
+}
