@@ -26,6 +26,7 @@ remove_package() {
 create_user(){
     user="$(cat /netinstall/data/username)"
     pass="$(cat /netinstall/data/password)"
+    apk add openssl
     chroot /target useradd -m -s /bin/ash "$user"
     chroot /target usermod -p $(openssl passwd "$pass") "$user"
     chroot /target usermod -p $(openssl passwd "$pass") root
