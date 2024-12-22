@@ -27,6 +27,9 @@ install_package(){
      chroot /target apk add $@
 }
 
+remove_package(){
+    chroot /target apk del $@
+}
 update_initramfs() {
     echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet rootfstype=ext4 modules=sd-mod,usb-storage,ext4"' > /target/etc/default/grub
     for dir in $(ls /target/lib/modules) ; do
