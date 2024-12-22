@@ -23,17 +23,18 @@ install_base_system() {
     done
     chroot /target/ pacman-key --init
     chroot /target/ pacman-key --populate
+    chroot /target pacman -Syyu --noconfirm base archlinux-keyring
     for dir in dev sys proc run ; do
         umount -lf /target/$dir
     done
 }
 
 install_package(){
-    chroot /target pacman -Syy $@
+    chroot /target pacman -Syy --noconfirm $@
 }
 
 remove_package(){
-    chroot /target pacman -Rdd $@
+    chroot /target pacman -Rdd --noconfirm $@
 }
 
 update_initramfs() {
