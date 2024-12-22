@@ -21,6 +21,7 @@ https://dl-cdn.alpinelinux.org/alpine/edge/testing
 https://dl-cdn.alpinelinux.org/alpine/latest-stable/main
 https://dl-cdn.alpinelinux.org/alpine/latest-stable/community
 EOF
+    cat /etc/resolf.conf > /target/etc/resolv.conf
 }
 
 install_package(){
