@@ -38,6 +38,16 @@ update_initramfs() {
     done
 }
 
+create_user(){
+    user="$(cat /netinstall/data/username)"
+    pass="$(cat /netinstall/data/password)"
+    chroot /target apk add shadow openssl
+    chroot /target useradd -m -s /bin/ash "$user"
+    chroot /target usermod -p $(openssl passwd "$pass") "$user"
+    chroot /target usermod -p $(openssl passwd "$pass") root
+ 
+}
+
 configure(){
     : fixme
 }

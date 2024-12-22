@@ -24,6 +24,14 @@ update_initramfs() {
     : dont required
 }
 
+create_user(){
+    user="$(cat /netinstall/data/username)"
+    pass="$(cat /netinstall/data/password)"
+    chroot /target useradd -m -s /bin/ash "$user"
+    chroot /target usermod -p $(openssl passwd "$pass") "$user"
+    chroot /target usermod -p $(openssl passwd "$pass") root
+}
+
 configure() {
     case $1 in
       testing)
