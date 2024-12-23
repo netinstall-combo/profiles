@@ -13,22 +13,30 @@ install_base_system() {
     ln -s sid /usr/share/debootstrap/scripts/$codename || true
     debootstrap --variant minbase $codename /target $repo
     cat /etc/resolv.conf > /target/etc/resolv.conf
-    cat> /target/etc/apt/apt.conf.d/01norecommend << EOF
-APT::Install-Recommends "0";
-APT::Install-Suggests "0";
-EOF
-    # remove systemd
-    rm -f /target/var/lib/dpkg/info/systemd.p* || true
-    chroot /target apt install orphan-sysvinit-scripts sysvinit-core sysv-rc libpam-elogind -yq
-    chroot /target apt-mark hold systemd
-    ln -s true /target/bin/systemctl
     # auto service start disabled
     echo -e "#!/bin/sh\nexit 101" > /target/usr/sbin/policy-rc.d
     chmod +x /target/usr/sbin/policy-rc.d
+    if grep "testing" /netinstall/data/options >/dev/null ; then
+        mkdir -p /target/etc/apt/sources.list.d/
+        echo "deb https://deb.debian.org/debian testing main contrib non-free non-free-firmware" > /target/etc/apt/sources.list.d/testing.list
+        chroot /target apt update
+        chroot /target apt full-upgrade -yq
+    fi
+    if ! grep "recommends" /netinstall/data/options >/dev/null ; then
+        echo 'APT::Install-Recommends "0";' > /target/etc/apt/apt.conf.d/01norecommend
+        echo 'APT::Install-Suggests "0";' >> /target/etc/apt/apt.conf.d/01norecommend
+    fi
+    if ! grep "systemd" /netinstall/data/options >/dev/null ; then
+        # remove systemd
+        rm -f /target/var/lib/dpkg/info/systemd.p* || true
+        chroot /target apt install orphan-sysvinit-scripts sysvinit-core sysv-rc libpam-elogind -yq
+        chroot /target apt-mark hold systemd
+        ln -s true /target/bin/systemctl
+    fi
 }
 
 install_package(){
-    chroot /target/ apt install --no-install-recommends -o Dpkg::Options::="--force-confnew" -yq $@
+    chroot /target/ apt install -o Dpkg::Options::="--force-confnew" -yq $@
 }
 
 remove_package() {
@@ -49,11 +57,5 @@ create_user(){
 }
 
 configure() {
-    case $1 in
-      testing)
-        echo "deb https://deb.debian.org/debian testing main contrib non-free non-free-firmware" > /target/etc/apt/sources.list
-        chroot /target apt update
-        chroot /target apt full-upgrade -yq
-        ;;
-    esac
+    : dont required
 }
