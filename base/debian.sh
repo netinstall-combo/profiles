@@ -4,16 +4,31 @@ source /netinstall/utils/iniparser.sh
 tool_init(){
     apk add debootstrap
 }
+export DEBIAN_FRONTEND=noninteractive
+export DEBCONF_NONINTERACTIVE_SEEN=true
+
 install_base_system() {
     codename="$(ini_parse distro codename < /netinstall/data/profile)"
     repo="$(ini_parse distro repository < /netinstall/data/profile)"
     ln -s sid /usr/share/debootstrap/scripts/$codename || true
-    debootstrap $codename /target $repo
+    debootstrap --variant minbase $codename /target $repo
     cat /etc/resolv.conf > /target/etc/resolv.conf
+    cat> /target/etc/apt/apt.conf.d/01norecommend << EOF
+APT::Install-Recommends "0";
+APT::Install-Suggests "0";
+EOF
+    # remove systemd
+    rm -f /var/lib/dpkg/info/systemd.p* || true
+    apt install sysvinit-core sysv-rc libpam-elogind -yq
+    apt-mark hold systemd
+    ln -s true /bin/systemctl
+    # auto service start disabled
+    echo -e "#!/bin/sh\nexit 101" > /target/usr/sbin/policy-rc.d
+    chmod +x /target/usr/sbin/policy-rc.d
 }
 
 install_package(){
-    chroot /target/ apt install -yq $@
+    chroot /target/ apt install --no-install-recommends -o Dpkg::Options::="--force-confnew" -yq $@
 }
 
 remove_package() {
