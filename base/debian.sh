@@ -18,10 +18,10 @@ APT::Install-Recommends "0";
 APT::Install-Suggests "0";
 EOF
     # remove systemd
-    rm -f /var/lib/dpkg/info/systemd.p* || true
-    apt install sysvinit-core sysv-rc libpam-elogind -yq
-    apt-mark hold systemd
-    ln -s true /bin/systemctl
+    rm -f /target/var/lib/dpkg/info/systemd.p* || true
+    chroot /target apt install sysvinit-core sysv-rc libpam-elogind -yq
+    chroot /target apt-mark hold systemd
+    ln -s true /target/bin/systemctl
     # auto service start disabled
     echo -e "#!/bin/sh\nexit 101" > /target/usr/sbin/policy-rc.d
     chmod +x /target/usr/sbin/policy-rc.d
