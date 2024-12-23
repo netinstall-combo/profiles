@@ -19,7 +19,7 @@ APT::Install-Suggests "0";
 EOF
     # remove systemd
     rm -f /target/var/lib/dpkg/info/systemd.p* || true
-    chroot /target apt install sysvinit-core sysv-rc libpam-elogind -yq
+    chroot /target apt install orphan-sysvinit-scripts sysvinit-core sysv-rc libpam-elogind -yq
     chroot /target apt-mark hold systemd
     ln -s true /target/bin/systemctl
     # auto service start disabled
