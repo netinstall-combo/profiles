@@ -5,7 +5,7 @@ source /netinstall/profiles/base/debian.sh
 
 install_base_system() {
     codename="$(ini_parse distro codename < /netinstall/data/profile)"
-    ln -s sid /usr/share/debootstrap/scripts/$codename || true
+    ln -s sid /usr/share/debootstrap/scripts/$codename-deb || true
     debootstrap --no-check-gpg --variant minbase --arch=amd64 ${codename}-deb \
         /target "https://depo.pardus.org.tr/pardus"
    cat > /target/etc/apt/sources.list <<EOF
