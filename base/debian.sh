@@ -22,16 +22,9 @@ install_base_system() {
         chroot /target apt update
         chroot /target apt full-upgrade -yq
     fi
-    if ! grep "recommends" /netinstall/data/options >/dev/null ; then
+    if grep "no-recommends" /netinstall/data/options >/dev/null ; then
         echo 'APT::Install-Recommends "0";' > /target/etc/apt/apt.conf.d/01norecommend
         echo 'APT::Install-Suggests "0";' >> /target/etc/apt/apt.conf.d/01norecommend
-    fi
-    if ! grep "systemd" /netinstall/data/options >/dev/null ; then
-        # remove systemd
-        rm -f /target/var/lib/dpkg/info/systemd.p* || true
-        chroot /target apt install orphan-sysvinit-scripts sysvinit-core sysv-rc libpam-elogind -yq
-        chroot /target apt-mark hold systemd
-        ln -s true /target/bin/systemctl
     fi
 }
 
