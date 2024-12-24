@@ -1,7 +1,7 @@
 set -e
 set -o pipefail
 source /netinstall/utils/iniparser.sh
-source /netinstall/profiles/debian.sh
+source /netinstall/profiles/base/debian.sh
 
 install_base_system() {
     codename="$(ini_parse distro codename < /netinstall/data/profile)"
