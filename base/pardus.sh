@@ -9,6 +9,7 @@ install_base_system() {
     debootstrap --no-check-gpg --variant minbase --arch=amd64 ${codename}-deb \
         /target "https://depo.pardus.org.tr/pardus"
    cat > /target/etc/apt/sources.list <<EOF
+deb https://deb.debian.org/debian stable main contrib non-free non-free-firmware
 deb http://depo.pardus.org.tr/pardus $codename-deb main contrib non-free non-free-firmware
 deb http://depo.pardus.org.tr/pardus $codename main contrib non-free non-free-firmware
 deb http://depo.pardus.org.tr/guvenlik $codename-deb main contrib non-free non-free-firmware
