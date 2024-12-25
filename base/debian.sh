@@ -26,6 +26,7 @@ install_base_system() {
         echo 'APT::Install-Recommends "0";' > /target/etc/apt/apt.conf.d/01norecommend
         echo 'APT::Install-Suggests "0";' >> /target/etc/apt/apt.conf.d/01norecommend
     fi
+    install_package sysv-rc sysvinit-utils sysvinit-core -yq
 }
 
 install_package(){
