@@ -19,13 +19,13 @@ install_base_system() {
     if grep "testing" /netinstall/data/options >/dev/null ; then
         mkdir -p /target/etc/apt/sources.list.d/
         echo "deb https://deb.debian.org/debian testing main contrib non-free non-free-firmware" > /target/etc/apt/sources.list.d/testing.list
-        chroot /target apt update
-        chroot /target apt full-upgrade -yq
     fi
     if grep "no-recommends" /netinstall/data/options >/dev/null ; then
         echo 'APT::Install-Recommends "0";' > /target/etc/apt/apt.conf.d/01norecommend
         echo 'APT::Install-Suggests "0";' >> /target/etc/apt/apt.conf.d/01norecommend
     fi
+    chroot /target apt update
+    chroot /target apt full-upgrade -o Dpkg::Options::="--force-confnew" -yq
     install_package sysv-rc sysvinit-utils sysvinit-core -yq
 }
 

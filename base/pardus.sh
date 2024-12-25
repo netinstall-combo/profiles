@@ -31,9 +31,13 @@ Pin: release a=$codename-backports
 Pin-Priority: 900
 EOF
     fi
+    if grep "testing" /netinstall/data/options >/dev/null ; then
+        mkdir -p /target/etc/apt/sources.list.d/
+        echo "deb https://deb.debian.org/debian testing main contrib non-free non-free-firmware" > /target/etc/apt/sources.list.d/testing.list
+    fi
     if grep "no-recommends" /netinstall/data/options >/dev/null ; then
-        echo 'APT::Install-Recommends "0";' > /target/etc/apt/apt.conf.d/01nore>
-        echo 'APT::Install-Suggests "0";' >> /target/etc/apt/apt.conf.d/01norec>
+        echo 'APT::Install-Recommends "0";' > /target/etc/apt/apt.conf.d/01norecommend
+        echo 'APT::Install-Suggests "0";' >> /target/etc/apt/apt.conf.d/01norecommend
     fi
     chroot /target apt update
     chroot /target apt full-upgrade -o Dpkg::Options::="--force-confnew" -yq
