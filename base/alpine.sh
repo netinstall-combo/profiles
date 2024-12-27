@@ -24,7 +24,10 @@ EOF
     cat /etc/resolv.conf > /target/etc/resolv.conf
     chroot /target apk add eudev ca-certificates elogind dbus fuse
     chroot /target rc-update add dbus
-    chroot /target rc-update add udev
+    chroot /target rc-update add udev sysinit
+    chroot /target rc-update add udev-trigger sysinit
+    chroot /target rc-update add udev-settle sysinit
+    chroot /target rc-update add udev-postmount default
     chroot /target rc-update add elogind
     chroot /target rc-update add fuse
 }
