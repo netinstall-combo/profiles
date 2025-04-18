@@ -11,7 +11,7 @@ install_base_system() {
     codename="$(ini_parse distro codename < /netinstall/data/profile)"
     repo="$(ini_parse distro repository < /netinstall/data/profile)"
     ln -s sid /usr/share/debootstrap/scripts/$codename || true
-    debootstrap --variant minbase $codename --exclude=usr-is-merged /target $repo
+    debootstrap --variant minbase --exclude=usr-is-merged $codename /target $repo
     cat /etc/resolv.conf > /target/etc/resolv.conf
     # auto service start disabled
     echo -e "#!/bin/sh\nexit 101" > /target/usr/sbin/policy-rc.d
