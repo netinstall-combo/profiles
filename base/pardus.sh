@@ -41,6 +41,5 @@ EOF
     fi
     chroot /target apt update
     chroot /target apt full-upgrade -o Dpkg::Options::="--force-confnew" -yq
-    install_package sysv-rc sysvinit-utils sysvinit-core -yq
 }
 
