@@ -27,11 +27,12 @@ install_base_system() {
         echo 'APT::Install-Suggests "0";' >> /target/etc/apt/apt.conf.d/01norecommend
     fi
     if grep "devuan" /netinstall/data/options >/dev/null ; then
-        echo "deb http://deb.devuan.org/devuan $dist main contrib non-free non-free-firmware" > /target/etc/apt/sources.list.d/devuan.list
-        echo "deb http://deb.devuan.org/devuan $dist-updates main contrib non-free non-free-firmware" >> /target/etc/apt/sources.list.d/devuan.list
-        echo "deb http://deb.devuan.org/devuan $dist-security main contrib non-free non-free-firmware" >> /target/etc/apt/sources.list.d/devuan.list
+        echo "deb http://pkgmaster.devuan.org/merged $dist main contrib non-free non-free-firmware" > /target/etc/apt/sources.list.d/devuan.list
+        echo "deb http://pkgmaster.devuan.org/merged $dist-updates main contrib non-free non-free-firmware" >> /target/etc/apt/sources.list.d/devuan.list
+        echo "deb http://pkgmaster.devuan.org/merged $dist-security main contrib non-free non-free-firmware" >> /target/etc/apt/sources.list.d/devuan.list
         chroot /target apt update --allow-insecure-repositories
         chroot /target apt install devuan-keyring --allow-unauthenticated -yq
+        chroot /target apt update
         chroot /target apt install elogind sysvinit-core openrc systemd- systemd-sysv- -yq --allow-remove-essential
         chroot /target apt-mark hold systemd libsystemd0 libsystemd-shared
         ln -s /bin/true /target/bin/systemctl
