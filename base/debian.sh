@@ -48,7 +48,7 @@ create_user(){
     chroot /target usermod -p $(openssl passwd "$pass") "$user"
     chroot /target usermod -p $(openssl passwd "$pass") root
     for grp in cdrom floppy sudo audio dip video users plugdev netdev bluetooth lpadmin ; do
-        chroot /target usermod -aG $grp || true
+        chroot /target usermod -aG "$grp" "$user" || true
     done
 }
 
