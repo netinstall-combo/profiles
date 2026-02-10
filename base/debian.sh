@@ -16,13 +16,26 @@ install_base_system() {
     # auto service start disabled
     echo -e "#!/bin/sh\nexit 101" > /target/usr/sbin/policy-rc.d
     chmod +x /target/usr/sbin/policy-rc.d
+    dist=stable
     if grep "testing" /netinstall/data/options >/dev/null ; then
         mkdir -p /target/etc/apt/sources.list.d/
-        echo "deb https://deb.debian.org/debian testing main contrib non-free non-free-firmware" > /target/etc/apt/sources.list.d/testing.list
+        dist="testing"
+        echo "deb https://deb.debian.org/debian $dist main contrib non-free non-free-firmware" > /target/etc/apt/sources.list.d/testing.list
     fi
     if grep "no-recommends" /netinstall/data/options >/dev/null ; then
         echo 'APT::Install-Recommends "0";' > /target/etc/apt/apt.conf.d/01norecommend
         echo 'APT::Install-Suggests "0";' >> /target/etc/apt/apt.conf.d/01norecommend
+    fi
+    if grep "devuan" /netinstall/data/options >/dev/null ; then
+        echo "deb http://deb.devuan.org/devuan $dist main contrib non-free non-free-firmware" > /target/etc/apt/sources.list.d/devuan.list
+        echo "deb http://deb.devuan.org/devuan $dist-updates main contrib non-free non-free-firmware" >> /target/etc/apt/sources.list.d/devuan.list
+        echo "deb http://deb.devuan.org/devuan $dist-security main contrib non-free non-free-firmware" >> /target/etc/apt/sources.list.d/devuan.list
+        chroot /target apt update --allow-insecure-repositories
+        chroot /target apt install devuan-keyring --allow-unauthenticated -yq
+        chroot /target apt install elogind sysvinit-core openrc systemd- systemd-sysv- -yq --allow-remove-essential
+        chroot /target apt-mark hold systemd libsystemd0 libsystemd-shared
+        ln -s /bin/true /target/bin/systemctl
+        
     fi
     chroot /target apt update
     chroot /target apt full-upgrade -o Dpkg::Options::="--force-confnew" -yq
