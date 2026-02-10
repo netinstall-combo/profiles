@@ -22,7 +22,7 @@ https://dl-cdn.alpinelinux.org/alpine/latest-stable/main
 https://dl-cdn.alpinelinux.org/alpine/latest-stable/community
 EOF
     cat /etc/resolv.conf > /target/etc/resolv.conf
-    chroot /target apk add eudev ca-certificates elogind dbus fuse
+    chroot /target apk add eudev ca-certificates elogind dbus fuse openrc
     chroot /target rc-update add dbus
     chroot /target rc-update add udev sysinit
     chroot /target rc-update add udev-trigger sysinit
